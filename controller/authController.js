@@ -1,25 +1,23 @@
 import { catchAsync } from "../helper/catchAsync.js";
-import User from "../models/users.js";
+import User from "../models/users.js"; // Adjusted model import
 import { createJWT, findUserByEmail } from "../service/user.js";
-import bcrypt from 'bcrypt';
-import { generateOTP, sendEmailWithOTP } from "../mailer/email.js";  // Import email functions
-import { Otp } from "../models/otp.js"; // OTP schema for storing OTP
+import bcrypt from "bcrypt";
+import { generateOTP, sendEmailWithOTP } from "../mailer/email.js"; // Import email functions
+import Otp from "../models/Otp.js"; // Adjusted model import for OTP
 
 const register = catchAsync(async (req, res) => {
-  const { email, username, password } = req.body;
+  const { email, name, password } = req.body;
 
-  console.log("Email debug");
   const existingUser = await findUserByEmail(email);
-  
+
   if (existingUser) {
     if (existingUser.isEmailVerified) {
       throw new Error("Email already taken");
     } else {
       const otp = generateOTP();
-      const expirationTime = new Date(Date.now() + 10 * 60 * 1000); 
+      const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
 
       await Otp.create({ email, otp, expirationTime });
-
       await sendEmailWithOTP(email, otp);
 
       return res.status(200).json({
@@ -27,42 +25,34 @@ const register = catchAsync(async (req, res) => {
       });
     }
   }
-  
-  // console.log("Email verification debug");
-  const existingUsername = await User.findOne({ username });
-  if (existingUsername) {
-    throw new Error("Username already taken");
-  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({
-    ...req.body,
+    name,
+    email,
     password: hashedPassword,
     isEmailVerified: false,
+    role: "reader", // Default role
   });
 
   const otp = generateOTP();
-  const expirationTime = new Date(Date.now() + 10 * 60 * 1000); 
+  const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
 
   await Otp.create({ email, otp, expirationTime });
-
   await sendEmailWithOTP(email, otp);
-
-  // const token = createJWT(newUser._id);
 
   return res.status(201).json({
     message: "Registration successful. Please verify your email.",
     user: {
-      username: newUser.username,
+      name: newUser.name,
       email: newUser.email,
-      // token,
     },
   });
 });
 
 const verifyEmail = catchAsync(async (req, res) => {
-  const { email, otp } = req.body;  
+  const { email, otp } = req.body;
 
   if (!email || !otp) {
     throw new Error("Email and OTP are required");
@@ -92,8 +82,6 @@ const verifyEmail = catchAsync(async (req, res) => {
   });
 });
 
-export { register, verifyEmail };
-
 const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
@@ -116,7 +104,7 @@ const login = catchAsync(async (req, res) => {
   return res.status(200).json({
     message: "Login successful.",
     user: {
-      username: existingUser.username,
+      name: existingUser.name,
       email: existingUser.email,
       token,
     },
