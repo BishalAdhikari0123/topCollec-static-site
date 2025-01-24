@@ -53,56 +53,74 @@ const userValidation = {
       }),
 
     // Conditional validation based on role
-    // Admin-specific validation
-    admin: Joi.when('role', {
+    permissions: Joi.array()
+    .items(Joi.string().valid("manage_users", "manage_content"))
+    .when('role', {
       is: 'admin',
-      then: Joi.object({
-        permissions: Joi.array()
-          .items(Joi.string().valid("manage_users", "manage_content"))
-          .required()
-          .messages({
-            'array.base': 'Permissions should be an array of strings',
-            'array.includes': 'Permissions must be valid',
-            'array.empty': 'Permissions are required for admin',
-          }),
-      }),
-      otherwise: Joi.object().forbidden(),
+      then: Joi.array().min(1).required() // Make sure at least one permission is required
+        .messages({
+          'array.base': 'Permissions should be an array of strings',
+          'array.includes': 'Permissions must be valid',
+          'array.empty': 'Permissions are required for admin',
+          'array.min': 'Admin must have at least one permission'
+        }),
+      otherwise: Joi.optional(),
     }),
+  
+  
 
-    // Writer-specific validation
-    writer: Joi.when('role', {
-      is: 'writer',
-      then: Joi.object({
-        portfolio: Joi.string()
-          .uri()
-          .optional()
+    portfolio: Joi.string()
+      .uri()
+      .when('role', {
+        is: 'writer',
+        then: Joi.optional()
           .messages({
             'string.uri': 'Portfolio URL must be a valid URI',
           }),
-        expertise: Joi.string()
-          .min(5)
-          .optional()
+        otherwise: Joi.optional(),
+      }),
+
+    expertise: Joi.string()
+      .min(5)
+      .when('role', {
+        is: 'writer',
+        then: Joi.optional()
           .messages({
             'string.min': 'Expertise must be at least 5 characters long',
           }),
+        otherwise: Joi.optional(),
       }),
-      otherwise: Joi.object().forbidden(),
-    }),
 
-    // Reader-specific validation
-    reader: Joi.when('role', {
-      is: 'reader',
-      then: Joi.object({
-        preferences: Joi.array()
-          .items(Joi.string().valid("fiction", "non-fiction", "comics"))
-          .optional()
+    preferences: Joi.array()
+      .items(Joi.string().valid("fiction", "non-fiction", "comics"))
+      .when('role', {
+        is: 'reader',
+        then: Joi.optional()
           .messages({
             'array.base': 'Preferences should be an array of strings',
             'array.includes': 'Preferences must be valid',
           }),
+        otherwise: Joi.optional(),
       }),
-      otherwise: Joi.object().forbidden(),
-    }),
+  }),
+
+  // Login validation
+  login: Joi.object({
+    email: Joi.string()
+      .email()
+      .required()
+      .messages({
+        'string.email': 'Please provide a valid email address',
+        'string.empty': 'Email is required',
+      }),
+
+    password: Joi.string()
+      .min(8)
+      .required()
+      .messages({
+        'string.empty': 'Password is required',
+        'string.min': 'Password must be at least 8 characters long',
+      }),
   }),
 };
 
