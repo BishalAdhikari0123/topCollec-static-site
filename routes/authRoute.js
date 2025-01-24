@@ -5,21 +5,25 @@ import authController from "../controller/authController.js";
 
 const authRouter = Router();
 
+// Route for user registration
 authRouter.post(
   "/register", 
-  validate(authValidation.register),
-  authController.register 
+  validate(authValidation.register), // Validates registration inputs using Joi schema
+  authController.register
 );
 
+// Route for user login
 authRouter.post(
   "/login", 
-  validate(authValidation.login),
-  authController.login 
+  validate(authValidation.login), // Validates login inputs using Joi schema
+  authController.login
 );
 
-authRouter.get(
-  "/verify-email/:token", 
-  authController.verifyEmail 
+// Route for email verification (updated to handle OTP-based flow)
+authRouter.post(
+  "/verify-email",
+  validate(authValidation.verifyEmail), // Validates email and OTP inputs
+  authController.verifyEmail
 );
 
 export default authRouter;

@@ -3,7 +3,7 @@ import User from "../models/users.js"; // Adjusted model import
 import { createJWT, findUserByEmail } from "../service/user.js";
 import bcrypt from "bcrypt";
 import { generateOTP, sendEmailWithOTP } from "../mailer/email.js"; // Import email functions
-import Otp from "../models/Otp.js"; // Adjusted model import for OTP
+import Otp from "../models/otp.js"; // Adjusted model import for OTP
 
 const register = catchAsync(async (req, res) => {
   const { email, name, password } = req.body;
