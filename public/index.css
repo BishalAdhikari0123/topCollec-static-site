@@ -1,0 +1,27 @@
+*{
+    background-color: rgb(236, 235, 239);
+    color: rgb(25, 26, 27);
+    /* margin: auto; */
+    /* display: flex; */
+    /* margin-top: 20rem; */
+}
+.container{
+    background-color: blueviolet;
+    /* margin: auto; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* margin-top: 25rem;. */
+    form{
+        flex-direction: column;
+        align-items: center;
+    }
+    margin-top: 20rem;
+
+}
+form{
+    label{
+        color: red;
+    }
+    margin: auto;
+}

@@ -5,20 +5,17 @@ meta {
 }
 
 post {
-  url: http://localhost:4002/auth/register/admin
+  url: http://localhost:4002/auth/login
   body: json
   auth: none
 }
 
 body:json {
   {
-    "email": "bighitnepal@example.com",
-    "name": "Admin User",
-    "username": "admin123",
-    "password": "adminpassword123",
-    "role": "admin",
-    "permissions": ["manage_users", "view_reports"],
-    "bio": "admin here"
+    
+    "email":"bighitnepal@gmail.com",
+    "password":"adminpassword123"
+    
   }
   
 }

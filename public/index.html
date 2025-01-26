@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to My Project</title>
+  <!-- Link to Common Styles -->
+  <link rel="stylesheet" href="/common/css/styles.css">
+
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>Welcome to My Project</h1>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <h2>Explore the Features</h2>
+    <p>Welcome! This project includes a secure authentication system, role-based access, and various features for admins, writers, and readers.</p>
+    <p>Choose an option to proceed:</p>
+    <div id="links-container" style="text-align: center; margin-top: 20px;">
+      <button id="login-btn">Login</button>
+      <button id="register-btn">Register</button>
+    </div>
+    <div id="message" style="margin-top: 20px; color: red;"></div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const messageDiv = document.getElementById('message');
+      const loginBtn = document.getElementById('login-btn');
+      const registerBtn = document.getElementById('register-btn');
+
+      // Function to fetch routes and navigate
+      const navigateTo = async (route) => {
+        try {
+          const response = await fetch(route, { method: 'GET' });
+          if (response.ok) {
+            window.location.href = route;
+          } else {
+            messageDiv.textContent = `Failed to navigate to ${route}. Error: ${response.statusText}`;
+          }
+        } catch (error) {
+          messageDiv.textContent = `Error fetching route: ${error.message}`;
+        }
+      };
+
+      // Event listeners for buttons
+      loginBtn.addEventListener('click', () => navigateTo('/authentication/html/login.html'));
+      registerBtn.addEventListener('click', () => navigateTo('/authentication/html/register.html'));
+    });
+  </script>
+</body>
+</html>

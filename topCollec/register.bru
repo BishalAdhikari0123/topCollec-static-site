@@ -5,7 +5,20 @@ meta {
 }
 
 post {
-  url: http://localhost:4002/auth/register
-  body: none
+  url: http://localhost:4002/auth/register/admin
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "email": "bighitnepal@gmail.com",
+    "name": "Admin User",
+    "username": "admin1",
+    "password": "adminpassword123",
+    "role": "admin",
+    "permissions": ["manage_users", "view_reports"],
+    "bio": "admin here"
+  }
+  
 }
