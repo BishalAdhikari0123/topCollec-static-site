@@ -118,13 +118,12 @@
           alert(`Error: ${errorData.message || 'Registration failed.'}`);
           return;
         }
-
-        const result = await response.json();
+        const result = await response.json(); 
         alert('Registration successful! Please verify your email.');
-        window.location.href = '/verify.html';
+        window.location.href = '/authentication/html/verify.html'; 
       } catch (error) {
-        console.error('Error:', error);
-        alert('Something went wrong. Please try again.');
+       console.error('Error:', error); 
+      alert('Something went wrong. Please try again.');
       }
     });
   </script>
